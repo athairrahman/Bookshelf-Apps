@@ -1,0 +1,243 @@
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@200;400;700&display=swap");
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body,
+input,
+button {
+  font-family: Nunito, sans-serif;
+}
+
+input,
+button {
+  font-size: 16px;
+}
+
+.head_bar {
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  /* flex-direction: row; */
+  flex: 2;
+  background-color: #fff7f1;
+  color: #e78895;
+}
+
+.search_section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f8f9fa;
+  padding: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#searchBook {
+  display: flex;
+  align-items: center;
+}
+
+#searchSubmit {
+  background-color: #f8f9fa;
+  color: #6c757d;
+  border: none;
+  padding: 10px;
+  margin-right: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#searchSubmit:hover {
+  background-color: #fff7f1;
+  color: #6c757d;
+}
+
+#searchBookTitle {
+  border: none;
+  padding: 10px;
+  font-size: 16px;
+  width: 100%;
+}
+
+#searchBookTitle:focus {
+  outline: none; /* Menghapus focus outline bawaan browser */
+  border-top: none;
+  border-right: none;
+  border-left: none;
+  border-bottom: 2px solid #6c757d; /* Menampilkan border bawah saat input di-focus */
+}
+
+#searchBookTitle::placeholder {
+  color: #6c757d;
+}
+
+.fa-magnifying-glass {
+  font-size: 1rem;
+}
+
+.main-page {
+  display: flex;
+  justify-content: center;
+  padding: 1rem;
+  gap: 1rem;
+}
+.main-display-book {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+.input_section {
+  display: flex;
+  flex-direction: column;
+  height: 50%;
+  margin: auto;
+  padding: 16px;
+  border: 1px solid #bed1cf;
+  background-color: #bed1cf;
+}
+
+.input_section > h2 {
+  text-align: center;
+  color: #6c757d;
+}
+
+.input_section > form > .input {
+  margin: 8px 0;
+}
+
+.input_section > form > button {
+  background-color: #e78895;
+  color: #000;
+  border: 0;
+  border-radius: 5px;
+  display: block;
+  margin: auto;
+  width: 400px;
+  max-width: 100%;
+  padding: 8px;
+  cursor: pointer;
+}
+
+.input_section > form > button > span {
+  font-weight: bold;
+}
+
+.input_section > form > .input > input {
+  display: block;
+  width: 100%;
+  padding: 8px;
+  outline-style: none;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  border-bottom: 1px solid #6c757d;
+}
+
+.input_section > form > .input > label {
+  color: #6c757d;
+  font-weight: bold;
+}
+
+.input_section > form > .input_inline {
+  margin: 12px 0;
+  display: flex;
+  align-items: center;
+}
+
+.input_section > form > .input_inline > label {
+  color: #6c757d;
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.book_shelf {
+  margin: 16px 0 0 0;
+  border: 1px solid #bed1cf;
+  padding: 16px;
+  /* border-radius: 10px; */
+}
+
+.book_shelf > h2 {
+  color: #6c757d;
+}
+.book_shelf > .book_list {
+  padding: 16px;
+  margin-top: 10px;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  gap: 15px;
+  background-color: #fff7f1;
+}
+
+.book_shelf > .book_list > .book_item {
+  padding: 8px 16px 16px 16px;
+  background-color: #ffe4c9;
+  min-width: 240px;
+  border: none;
+  border-radius: 5px;
+  margin: 10px 0;
+}
+
+.book_shelf > .book_list > .book_item > h3,
+p {
+  margin: 8px 0;
+}
+
+.book_shelf > .book_list > .book_item > .action {
+  border-radius: 10px;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-flow: row wrap;
+  gap: 1rem;
+}
+
+.book_shelf > .book_list > .book_item > .action > button {
+  border: 0;
+  padding: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.book_shelf > .book_list > .book_item > .action > .material-symbols-outlined {
+  background-color: #e78895;
+  color: #6c757d;
+}
+
+.line-hr {
+  width: 250px;
+  max-width: 100%;
+  margin: auto;
+  border-top: 4px solid #e78895;
+}
+
+.book_shelf > h2 {
+  text-align: center;
+}
+
+/* Untuk layar dengan lebar maksimum 768px */
+@media only screen and (max-width: 768px) {
+  main {
+    width: 90%; /* Ubah lebar main menjadi 90% */
+  }
+
+  .input_section > form > button {
+    width: 100%; /* Tombol input akan mengisi lebar parent element */
+  }
+
+  .book_shelf > .book_list {
+    flex-direction: column; /* Mengubah arah flex menjadi vertikal */
+    align-items: center; /* Pusatkan item secara horizontal */
+  }
+
+  .book_shelf > .book_list > .book_item {
+    min-width: auto; /* Hapus minimum lebar untuk item buku */
+  }
+}
