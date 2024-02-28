@@ -68,6 +68,26 @@ const backToBookFromReadBook = (bookId) => {
   booksSave();
 };
 
+//
+const updateBook = (bookId) => {
+  const bookTarget = fineBookIndex(bookId);
+
+  if (bookTarget === null) return;
+
+  const updateTitle = document.getElementById("inputBookTitle").value;
+  const updateAuthor = document.getElementById("inputBookAuthor").value;
+  const updateYears = document.getElementById("inputBookYear").value;
+  const isComplete = document.getElementById("inputBookIsComplete").checked;
+
+  books[bookTarget].title = updateTitle;
+  books[bookTarget].author = updateAuthor;
+  books[bookTarget].year = updateYears;
+  books[bookTarget].isComplete = isComplete;
+
+  document.dispatchEvent(new Event(RENDER_EVENT));
+  booksSave();
+};
+
 // fungsi untuk mengambil element judul,penulis, tahun, dan ID
 const inputDataBooks = () => {
   const isEditing =
@@ -140,24 +160,32 @@ const loadBookFromLocalStorage = () => {
 
 //fungsi untuk menemukan id buku seseai dengan yang diingin di edit
 const bookFromToEdit = (bookId) => {
-  // const bookToEdit = books.find((book) => {
-  //   return book.id === bookId;
-  // });
+  const bookToEdit = fineBookIndex(bookId);
 
-  const bookToEdit = books.find((book) => book.id === bookId);
-
-  document.getElementById("inputBookId").value = bookToEdit.id;
-  document.getElementById("inputBookTitle").value = bookToEdit.title;
-  document.getElementById("inputBookAuthor").value = bookToEdit.author;
-  document.getElementById("inputBookYear").value = bookToEdit.year;
+  document.getElementById("inputBookId").value = books[bookToEdit].id;
+  document.getElementById("inputBookTitle").value = books[bookToEdit].title;
+  document.getElementById("inputBookAuthor").value = books[bookToEdit].author;
+  document.getElementById("inputBookYear").value = books[bookToEdit].year;
   document.getElementById("inputBookIsComplete").checked =
-    bookToEdit.isComplete;
+    books[bookToEdit].isComplete;
 
   const bookSubmit = document.getElementById("bookSubmit");
-  bookSubmit.innerText = "Edit Buku";
+  bookSubmit.innerText = "Simpan";
 
-  const cancelEditBtn = document.getElementById("cancelEditBtn");
-  cancelEditBtn.style.display = "inline-block";
+  // const cancelEditBtn = document.getElementById("cancelEditBtn");
+  // cancelEditBtn.addEventListener("click", () => {
+  //   document.getElementById("inputBookId").value = "";
+  //   document.getElementById("inputBookTitle").value = "";
+  //   document.getElementById("inputBookAuthor").value = "";
+  //   document.getElementById("inputBookYear").value = "";
+  //   document.getElementById("inputBookIsComplete").checked = false;
+  // });
+
+  bookSubmit.addEventListener("click", () => {
+    const bookId = books[bookToEdit].id;
+    updateBook(bookId);
+    location.reload(true);
+  });
 };
 
 // fungsi untuk menampilkan data buku yang telah diinput
@@ -184,8 +212,8 @@ const displayBook = (dataBook, bookId) => {
   const backButton = createButton("undo");
 
   const editBook = document.createElement("Button");
-  editBook.innerText = "Edit";
-  editBook.classList.add("edit-button");
+  editBook.innerText = "edit";
+  editBook.classList.add("material-symbols-outlined");
   // menambahkan attribute data-book-id untuk menyimpan ID buku
   editBook.dataset.bookId = bookId;
 
@@ -204,7 +232,7 @@ const displayBook = (dataBook, bookId) => {
       moveBookToCompleted(dataBook.id);
     });
     editBook.addEventListener("click", () => {
-      bookFromToEdit(bookId);
+      bookFromToEdit(dataBook.id);
     });
   }
   const containerBookItem = document.createElement("article");
@@ -274,12 +302,6 @@ const renderBooks = (books) => {
     }
   });
 };
-
-// Event mengedit buku
-bookSubmit.addEventListener("click", () => {
-  const bookId = editBook.dataset.bookId;
-  bookFromToEdit(bookId);
-});
 
 // membuat event submit untuk melakukan penyimpanan data pada form yang telah diinput
 document.addEventListener("DOMContentLoaded", () => {
