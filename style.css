@@ -182,7 +182,7 @@ button {
   border: none;
   border-radius: 5px;
   margin: 10px 0;
-  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+  /* box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2); */
 }
 
 .book_shelf > .book_list > .book_item > h3,
@@ -234,6 +234,21 @@ p {
   color: #000;
 }
 
+.book_shelf > .book_list > .book_item > .action > .material-symbols-outlined {
+  color: #000;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.book_shelf
+  > .book_list
+  > .book_item
+  > .action
+  > .material-symbols-outlined:hover {
+  background-color: #000;
+  color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
 .line-hr {
   width: 250px;
   max-width: 100%;
@@ -249,6 +264,11 @@ p {
 @media only screen and (max-width: 768px) {
   main {
     width: 90%; /* Ubah lebar main menjadi 90% */
+  }
+
+  .main-page {
+    flex-direction: column;
+    margin: auto;
   }
 
   .input_section > form > button {

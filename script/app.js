@@ -72,7 +72,7 @@ const backToBookFromReadBook = (bookId) => {
 const updateBook = (bookId) => {
   const bookTarget = fineBookIndex(bookId);
 
-  if (bookTarget === null) return;
+  if (bookTarget === -1) return;
 
   const updateTitle = document.getElementById("inputBookTitle").value;
   const updateAuthor = document.getElementById("inputBookAuthor").value;
@@ -93,7 +93,9 @@ const inputDataBooks = () => {
   const isEditing =
     document.getElementById("bookSubmit").innerText === "Edit Buku";
 
-  const generatedID = generateId();
+  // const generatedID = generateId();
+
+  const inputBookId = document.getElementById("inputBookId").value;
   const inputBookTitle = document.getElementById("inputBookTitle").value;
   const inputBookAuthor = document.getElementById("inputBookAuthor").value;
   const inputBookYear = parseInt(
@@ -104,7 +106,8 @@ const inputDataBooks = () => {
   ).checked;
 
   if (isEditing) {
-    const bookIndek = books.findIndex((book) => book.id === generatedID);
+    // const bookIndek = books.findIndex((book) => book.id === generatedID);
+    const bookIndek = fineBookIndex(inputBookId);
 
     if (bookIndek !== -1) {
       books[bookIndek].title = inputBookTitle;
@@ -122,9 +125,11 @@ const inputDataBooks = () => {
       document.getElementById("inputBookTitle").value = "";
       document.getElementById("inputBookAuthor").value = "";
       document.getElementById("inputBookYear").value = "";
-      document.getElementById("inputBookIsComplete").checked = "";
+      document.getElementById("inputBookIsComplete").checked = false;
     }
   } else {
+    const generatedID = generateId();
+
     const bookObject = inputBookObject(
       generatedID,
       inputBookTitle,
@@ -162,6 +167,8 @@ const loadBookFromLocalStorage = () => {
 const bookFromToEdit = (bookId) => {
   const bookToEdit = fineBookIndex(bookId);
 
+  if (bookToEdit === null) return;
+
   document.getElementById("inputBookId").value = books[bookToEdit].id;
   document.getElementById("inputBookTitle").value = books[bookToEdit].title;
   document.getElementById("inputBookAuthor").value = books[bookToEdit].author;
@@ -172,20 +179,17 @@ const bookFromToEdit = (bookId) => {
   const bookSubmit = document.getElementById("bookSubmit");
   bookSubmit.innerText = "Simpan";
 
-  // const cancelEditBtn = document.getElementById("cancelEditBtn");
-  // cancelEditBtn.addEventListener("click", () => {
-  //   document.getElementById("inputBookId").value = "";
-  //   document.getElementById("inputBookTitle").value = "";
-  //   document.getElementById("inputBookAuthor").value = "";
-  //   document.getElementById("inputBookYear").value = "";
-  //   document.getElementById("inputBookIsComplete").checked = false;
-  // });
-
-  bookSubmit.addEventListener("click", () => {
+  const updateBookHandler = () => {
     const bookId = books[bookToEdit].id;
     updateBook(bookId);
+    bookSubmit.removeEventListener("click", updateBookHandler);
     location.reload(true);
-  });
+  };
+
+  // Remove any existing event listeners before adding a new one
+  bookSubmit.removeEventListener("click", updateBookHandler);
+
+  bookSubmit.addEventListener("click", updateBookHandler);
 };
 
 // fungsi untuk menampilkan data buku yang telah diinput
