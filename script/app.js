@@ -37,8 +37,14 @@ const inputBookObject = (id, title, author, year, isComplete) => {
 };
 
 // fungsi untuk melakukan letarasi pada index
-const fineBookIndex = (bookId) =>
-  books.findIndex((books) => books.id === bookId);
+const fineBookIndex = (bookId) => {
+  for (let i = 0; i < books.length; i++) {
+    if (books[i].id === bookId) {
+      return i;
+    }
+  }
+  return -1;
+};
 
 // fungsi hapus buku
 const removeBookFromReadBook = (bookId) => {
@@ -90,11 +96,6 @@ const updateBook = (bookId) => {
 
 // fungsi untuk mengambil element judul,penulis, tahun, dan ID
 const inputDataBooks = () => {
-  const isEditing =
-    document.getElementById("bookSubmit").innerText === "Edit Buku";
-
-  // const generatedID = generateId();
-
   const inputBookId = document.getElementById("inputBookId").value;
   const inputBookTitle = document.getElementById("inputBookTitle").value;
   const inputBookAuthor = document.getElementById("inputBookAuthor").value;
@@ -105,8 +106,9 @@ const inputDataBooks = () => {
     "inputBookIsComplete"
   ).checked;
 
-  if (isEditing) {
-    // const bookIndek = books.findIndex((book) => book.id === generatedID);
+  const mode = document.getElementById("inputBook").dataset.mode;
+
+  if (mode === "edit") {
     const bookIndek = fineBookIndex(inputBookId);
 
     if (bookIndek !== -1) {
@@ -114,18 +116,12 @@ const inputDataBooks = () => {
       books[bookIndek].author = inputBookAuthor;
       books[bookIndek].year = inputBookYear;
       books[bookIndek].isComplete = inputBookIsComplete;
-
-      document.getElementById("bookSubmit").innerText =
-        "Masukkan Buku ke rak <span>Belum selesai dibaca</span";
-      document.getElementById("cancelEditBtn").style.display = "none";
       booksSave();
 
-      // Reset nilai input form
-      document.getElementById("inputBookId").value = "";
-      document.getElementById("inputBookTitle").value = "";
-      document.getElementById("inputBookAuthor").value = "";
-      document.getElementById("inputBookYear").value = "";
-      document.getElementById("inputBookIsComplete").checked = false;
+      // panggil event render setelah mengedit
+      document.dispatchEvent(new Event(RENDER_EVENT));
+    } else {
+      console.error("Tidak menemukan buku yang ingin diedit");
     }
   } else {
     const generatedID = generateId();
@@ -140,8 +136,9 @@ const inputDataBooks = () => {
 
     books.push(bookObject);
     booksSave();
+    location.reload(true);
+    document.dispatchEvent(new Event(RENDER_EVENT));
   }
-  document.dispatchEvent(new Event(RENDER_EVENT));
 };
 
 // fungsi untuk mengload data dari localstorage ketika browsur dibuka kembali
@@ -161,35 +158,6 @@ const loadBookFromLocalStorage = () => {
     alert("gagal dimuat data buku", error);
     return null;
   }
-};
-
-//fungsi untuk menemukan id buku seseai dengan yang diingin di edit
-const bookFromToEdit = (bookId) => {
-  const bookToEdit = fineBookIndex(bookId);
-
-  if (bookToEdit === null) return;
-
-  document.getElementById("inputBookId").value = books[bookToEdit].id;
-  document.getElementById("inputBookTitle").value = books[bookToEdit].title;
-  document.getElementById("inputBookAuthor").value = books[bookToEdit].author;
-  document.getElementById("inputBookYear").value = books[bookToEdit].year;
-  document.getElementById("inputBookIsComplete").checked =
-    books[bookToEdit].isComplete;
-
-  const bookSubmit = document.getElementById("bookSubmit");
-  bookSubmit.innerText = "Simpan";
-
-  const updateBookHandler = () => {
-    const bookId = books[bookToEdit].id;
-    updateBook(bookId);
-    bookSubmit.removeEventListener("click", updateBookHandler);
-    location.reload(true);
-  };
-
-  // Remove any existing event listeners before adding a new one
-  bookSubmit.removeEventListener("click", updateBookHandler);
-
-  bookSubmit.addEventListener("click", updateBookHandler);
 };
 
 // fungsi untuk menampilkan data buku yang telah diinput
@@ -224,6 +192,37 @@ const displayBook = (dataBook, bookId) => {
   const action = document.createElement("div");
   action.classList.add("action");
   action.append(clearBook);
+
+  //fungsi untuk menemukan id buku seseai dengan yang diingin di edit
+  const bookFromToEdit = (bookId) => {
+    const bookToEdit = fineBookIndex(bookId);
+
+    if (bookToEdit !== -1) {
+      document.getElementById("inputBookId").value = books[bookToEdit].id;
+      document.getElementById("inputBookTitle").value = books[bookToEdit].title;
+      document.getElementById("inputBookAuthor").value =
+        books[bookToEdit].author;
+      document.getElementById("inputBookYear").value = books[bookToEdit].year;
+      document.getElementById("inputBookIsComplete").checked =
+        books[bookToEdit].isComplete;
+
+      const bookSubmit = document.getElementById("bookSubmit");
+      bookSubmit.innerText = "Simpan";
+
+      const inputBookFrom = document.getElementById("inputBook");
+      inputBookFrom.dataset.mode = "edit";
+
+      const updateBookHandler = () => {
+        const bookId = books[bookToEdit].id;
+        updateBook(bookId);
+        location.reload(true);
+      };
+
+      bookSubmit.addEventListener("click", updateBookHandler);
+    } else {
+      console.error("Buku yang ingin diedit tidak ditemukan");
+    }
+  };
 
   if (dataBook.isComplete) {
     action.append(backButton);
